@@ -1,9 +1,13 @@
-import express from 'express';
-import mongoose from 'mongoose';
-import dotenv from 'dotenv';
-import index from './routes/index.js';
-dotenv.config();
+import express from "express";
+import mongoose from "mongoose";
+import dotenv from "dotenv";
+import index from "./routes/index.js";
 const app = express();
+dotenv.config();
+
+// middlewares
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // router
 index(app);
@@ -11,7 +15,7 @@ index(app);
 // Database connection
 mongoose
   .connect(process.env.MONGODB_URI)
-  .then(() => console.log('DB Connected'))
+  .then(() => console.log("DB Connected"))
   .catch((err) => console.log(err));
 
 // express server
