@@ -1,13 +1,12 @@
-import express from 'express';
+import express from "express";
 const router = express.Router();
-import User from '../models/User.js';
-import cryptoJs from 'crypto-js';
-import jwt from 'jsonwebtoken';
-import { verifyToken } from './verifyToken.js';
+import User from "../models/User.js";
+import cryptoJs from "crypto-js";
+import jwt from "jsonwebtoken";
 
 // register
 
-router.post('/register', async (req, res) => {
+router.post("/register", async (req, res) => {
   const newUser = new User({
     username: req.body.username,
     email: req.body.email,
@@ -28,10 +27,10 @@ router.post('/register', async (req, res) => {
 
 // login
 
-router.post('/login', verifyToken, async (req, res) => {
+router.post("/login", async (req, res) => {
   try {
     const user = await User.findOne({ username: req.body.username });
-    !user && res.status(401).json('Wrong credentials!');
+    !user && res.status(401).json("Wrong credentials!");
 
     const hashedPassword = cryptoJs.AES.decrypt(
       user.password,
@@ -40,7 +39,7 @@ router.post('/login', verifyToken, async (req, res) => {
     const Originalpassword = hashedPassword.toString(cryptoJs.enc.Utf8);
 
     Originalpassword !== req.body.password &&
-      res.status(401).json('Password incorrect');
+      res.status(401).json("Password incorrect");
 
     const accessToken = jwt.sign(
       {
@@ -48,7 +47,7 @@ router.post('/login', verifyToken, async (req, res) => {
         isAdmin: user.isAdmin,
       },
       process.env.JWT_SEC,
-      { expiresIn: '3d' }
+      { expiresIn: "30d" }
     );
 
     const { password, ...others } = user._doc;

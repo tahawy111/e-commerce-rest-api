@@ -9,6 +9,7 @@ import {
 } from "./verifyToken.js";
 
 router.put("/:id", verifyTokenAndAuthorization, async (req, res) => {
+  console.log(req.user);
   if (req.body.password) {
     req.body.password = cryptoJs.AES.encrypt(
       req.body.password,
